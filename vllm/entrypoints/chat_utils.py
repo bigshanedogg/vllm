@@ -1318,7 +1318,7 @@ def _parse_chat_message_content_mm_part(
 
     if "discrete_image_url" in part:
         return "discrete_image_url", part.get("discrete_image_url", {}).get("indices", [])
-        if not isinstance(part_type, str):
+    if not isinstance(part_type, str):
         raise ValueError("Invalid 'type' field in multimodal part.")
     return part_type, "unknown part_type content"
 
@@ -1437,12 +1437,11 @@ def _parse_chat_message_content_part(
         str_content = cast(str, content)
         mm_parser.parse_video(str_content, uuid)
         modality = "video"
-    else:
     elif part_type == "discrete_image_url":
         mm_parser.parse_discrete_image(content, uuid)
         return None
     else:
-                raise NotImplementedError(f"Unknown part type: {part_type}")
+        raise NotImplementedError(f"Unknown part type: {part_type}")
 
     return (
         {"type": modality}

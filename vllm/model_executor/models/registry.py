@@ -132,8 +132,6 @@ _TEXT_GENERATION_MODELS = {
     "HunYuanMoEV1ForCausalLM": ("hunyuan_v1", "HunYuanMoEV1ForCausalLM"),
     "HunYuanDenseV1ForCausalLM": ("hunyuan_v1", "HunYuanDenseV1ForCausalLM"),
     "HCXVisionForCausalLM": ("hyperclovax_vision", "HCXVisionForCausalLM"),
-    "HCXVisionV2ForCausalLM": ("hcx_omni", "HCXOmniForCausalLM"),  # HyperCLOVAX-SEED-Omni-8B
-    "HCXOmniForCausalLM": ("hcx_omni", "HCXOmniForCausalLM"),
     "InternLMForCausalLM": ("llama", "LlamaForCausalLM"),
     "InternLM2ForCausalLM": ("internlm2", "InternLM2ForCausalLM"),
     "InternLM2VEForCausalLM": ("internlm2_ve", "InternLM2VEForCausalLM"),
@@ -365,7 +363,10 @@ _MULTIMODAL_MODELS = {
         "HunYuanVLForConditionalGeneration",
     ),
     "StepVLForConditionalGeneration": ("step_vl", "StepVLForConditionalGeneration"),
-    "InternVLChatModel": ("internvl", "InternVLChatModel"),
+    # HyperCLOVAX-SEED-Omni-8B (architectures: HCXVisionV2ForCausalLM)
+    "HCXVisionV2ForCausalLM": ("hcx_omni", "HCXOmniForCausalLM"),
+    "HCXOmniForCausalLM": ("hcx_omni", "HCXOmniForCausalLM"),
+        "InternVLChatModel": ("internvl", "InternVLChatModel"),
     "NemotronH_Nano_VL_V2": ("nano_nemotron_vl", "NemotronH_Nano_VL_V2"),
     "OpenCUAForConditionalGeneration": (
         "opencua",
