@@ -1099,31 +1099,32 @@ class HCXOmniMultiModalProcessor(Qwen2_5_VLMultiModalProcessor):
 
     def apply(
         self,
-        prompt,
-        mm_items,
-        hf_processor_mm_kwargs,
-        tokenization_kwargs=None,
-        *,
-        mm_uuids=None,
+        inputs,
+        timing_ctx=None,
     ):
-        # apply() receives mm_items: MultiModalDataItems (already parsed).
-        # Inject None placeholders into discrete_audio so that
-        # out_mm_kwargs["discrete_audio"] has count == n_audio.
-        # Without this, get_replacement_discrete_audio() is never called.
+        # The vLLM multimodal processor API changed from a 4-argument form
+        # (self, prompt_token_ids, mm_data, hf_processor_mm_kwargs) to a
+        # 2-argument form (self, inputs: ProcessorInputs, timing_ctx).
+        # This override uses the new signature and injects None placeholders
+        # for `discrete_audio` so that get_replacement_discrete_audio() is
+        # invoked for each audio item even before the actual discrete tokens
+        # are available (they are filled in later by the thinker stage).
+        from copy import copy as _copy
+        from dataclasses import replace as _dc_replace
+        from vllm.multimodal.processing.context import TimingContext
+
+        mm_items = inputs.mm_data_items
         if "audio" in mm_items and "discrete_audio" not in mm_items:
-            from copy import copy as _copy
             mm_items = _copy(mm_items)  # shallow copy
             n_audio = mm_items.get_count("audio")
             mm_items["discrete_audio"] = _DiscreteTokenItems(
                 [None] * n_audio, "discrete_audio"
             )
-        return super().apply(
-            prompt,
-            mm_items,
-            hf_processor_mm_kwargs,
-            tokenization_kwargs,
-            mm_uuids=mm_uuids,
-        )
+            inputs = _dc_replace(inputs, mm_data_items=mm_items)
+
+        if timing_ctx is None:
+            timing_ctx = TimingContext(enabled=False)
+        return super().apply(inputs, timing_ctx)
 
     def _get_cache_missing_items(self, cache, mm_data_items, mm_hashes):
         # Override to allow None placeholders for discrete_audio.

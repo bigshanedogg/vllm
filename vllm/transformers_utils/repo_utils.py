@@ -14,6 +14,7 @@ from typing import TypeVar
 import huggingface_hub
 from huggingface_hub import hf_hub_download, try_to_load_from_cache
 from huggingface_hub import list_repo_files as hf_list_repo_files
+from huggingface_hub.errors import HFValidationError
 from huggingface_hub.utils import (
     EntryNotFoundError,
     HfHubHTTPError,
@@ -284,6 +285,12 @@ def get_hf_file_to_dict(
             RevisionNotFoundError,
             EntryNotFoundError,
             LocalEntryNotFoundError,
+            # HFValidationError is raised by huggingface_hub when `model` is a
+            # local path that does not look like a valid repo-id (e.g. a file
+            # path such as "decoder/audio/NCZSCosybigvganDecoder.mar").  Treat
+            # it the same as "not found" so callers get None and can fall back
+            # to reading the file directly from disk.
+            HFValidationError,
         ) as e:
             logger.debug("File or repository not found in hf_hub_download:", exc_info=e)
             return None
