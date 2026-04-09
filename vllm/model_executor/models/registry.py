@@ -362,11 +362,10 @@ _MULTIMODAL_MODELS = {
         "hunyuan_vision",
         "HunYuanVLForConditionalGeneration",
     ),
-    "StepVLForConditionalGeneration": ("step_vl", "StepVLForConditionalGeneration"),
     # HyperCLOVAX-SEED-Omni-8B (architectures: HCXVisionV2ForCausalLM)
     "HCXVisionV2ForCausalLM": ("hcx_omni", "HCXOmniForCausalLM"),
     "HCXOmniForCausalLM": ("hcx_omni", "HCXOmniForCausalLM"),
-        "InternVLChatModel": ("internvl", "InternVLChatModel"),
+    "InternVLChatModel": ("internvl", "InternVLChatModel"),
     "NemotronH_Nano_VL_V2": ("nano_nemotron_vl", "NemotronH_Nano_VL_V2"),
     "OpenCUAForConditionalGeneration": (
         "opencua",

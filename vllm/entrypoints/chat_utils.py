@@ -639,7 +639,7 @@ def _resolve_items(
         mm_data["image"] = [data for data, uuid in items_by_modality["image"]]
     if "discrete_image" in items_by_modality:
         mm_data["discrete_image"] = [data for data, uuid in items_by_modality["discrete_image"]]
-        mm_uuids["image"] = [uuid for data, uuid in items_by_modality["image"]]
+        mm_uuids["discrete_image"] = [uuid for data, uuid in items_by_modality["discrete_image"]]
     if "audio_embeds" in items_by_modality:
         mm_data["audio"] = _get_embeds_data(
             "audio",
@@ -1030,6 +1030,13 @@ class AsyncMultiModalContentParser(BaseMultiModalContentParser):
 
         placeholder = self._tracker.add("video", coro)
         self._add_placeholder("video", placeholder)
+
+    def parse_discrete_image(self, indices: list, uuid: str | None = None) -> None:
+        import torch
+        tensor = torch.tensor(indices, dtype=torch.long)
+        future: asyncio.Future[tuple[torch.Tensor, str | None]] = asyncio.Future()
+        future.set_result((tensor, uuid))
+        self._tracker.add("discrete_image", future)
 
 
 def validate_chat_template(chat_template: Path | str | None):
